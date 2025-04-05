@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Top 100 Artworks</title>
+  <link href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" rel="stylesheet" />
+  <style>
+    body {
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+    }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .art-card img {
+      width: 100%;
+      height: auto;
+      border-radius: 0.5rem;
+    }
+    .art-card .info {
+      margin-top: 1rem;
+    }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1>Top 100 Greatest Artworks</h1>
+    <div class="gallery" id="gallery"></div>
+    <nav class="pagination">
+      <button onclick="prevPage()">Previous</button>
+      <span id="page-info"></span>
+      <button onclick="nextPage()">Next</button>
+    </nav>
+  </main>
+
+  <script src="artworks-data.js"></script>
+  <script>
+    const itemsPerPage = 12;
+    let currentPage = 1;
+
+    function renderGallery() {
+      const gallery = document.getElementById("gallery");
+      gallery.innerHTML = "";
+      const start = (currentPage - 1) * itemsPerPage;
+      const end = start + itemsPerPage;
+      const pageItems = artworks.slice(start, end);
+
+      pageItems.forEach((art) => {
+        const card = document.createElement("article");
+        card.className = "art-card";
+        card.innerHTML = `
+          <img src="${art.Image_Filename}" alt="${art.Title}" />
+          <div class="info">
+            <h3>${art.Title}</h3>
+            <p><strong>Artist:</strong> ${art.Artist}</p>
+            <p><strong>Year:</strong> ${art.Year}</p>
+            <p><strong>Justification:</strong> ${art.Justification}</p>
+            <p><strong>Sources:</strong> ${art.Sources}</p>
+          </div>
+        `;
+        gallery.appendChild(card);
+      });
+
+      document.getElementById("page-info").innerText = `Page ${currentPage} of ${Math.ceil(
+        artworks.length / itemsPerPage
+      )}`;
+    }
+
+    function nextPage() {
+      if (currentPage * itemsPerPage < artworks.length) {
+        currentPage++;
+        renderGallery();
+      }
+    }
+
+    function prevPage() {
+      if (currentPage > 1) {
+        currentPage--;
+        renderGallery();
+      }
+    }
+
+    renderGallery();
+  </script>
+</body>
+</html>
